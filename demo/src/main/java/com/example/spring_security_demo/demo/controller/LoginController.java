@@ -1,5 +1,6 @@
 package com.example.spring_security_demo.demo.controller;
 
+import com.example.spring_security_demo.demo.annotation.GenerateAppRestController;
 import com.example.spring_security_demo.demo.auth.JwtService;
 import com.example.spring_security_demo.demo.dto.UserCredDto;
 import com.example.spring_security_demo.demo.entity.UserCredInfo;
@@ -8,12 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Base64;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/generate/app")
 public class LoginController {
 
     @Autowired
