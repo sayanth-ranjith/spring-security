@@ -4,6 +4,8 @@ A simple Java Spring Boot project demonstrating database-based authentication us
 
 This project is intended as a starter template for learning and building secure Spring Boot applications.
 
+Always make use of main branch.
+
 ---
 
 ## Features
