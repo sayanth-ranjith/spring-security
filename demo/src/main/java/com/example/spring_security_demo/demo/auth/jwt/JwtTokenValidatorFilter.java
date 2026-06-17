@@ -7,10 +7,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,7 +80,16 @@ public class JwtTokenValidatorFilter extends OncePerRequestFilter {
             if (token == null) {
                 throw new IllegalArgumentException("Invalid scenario: Token should not be null to access this request.");
             }
-            jwtService.verifyToken(token, jwtService.extractUserName(token));
+            String username = jwtService.extractUserName(token);
+            boolean valid = jwtService.verifyToken(token, username);
+            if (!valid) {
+                throw new IllegalArgumentException("Invalid token");
+            }
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                            username,
+                            null,
+                            Collections.emptyList());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
             filterChain.doFilter(request, response);
         }
         catch (Exception e) {
