@@ -70,7 +70,7 @@ public class JwtTokenValidatorFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String requestPath = request.getRequestURI();
         // Skip filtering for /generate/app/** paths
-        return requestPath.startsWith("/generate/app");
+        return requestPath.startsWith("/generate/app/");
     }
 
     @Override
