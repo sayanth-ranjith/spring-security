@@ -1,68 +1,58 @@
-# Spring Security Demo
+# Spring Security JWT Demo
 
-A simple Java Spring Boot project demonstrating database-based authentication using Spring Security with BCrypt password encoding.
+A Java Spring Boot project demonstrating **JWT-based authentication using Spring Security with database-backed users and BCrypt password encoding**.
 
-This project is intended as a starter template for learning and building secure Spring Boot applications.
-
-Always make use of main branch.
+This project is a learning starter template for building secure, stateless authentication systems using Spring Security + JWT.
 
 ---
 
-## Features
+## 🚀 Key Upgrade
 
-- Spring Boot + Spring Security integration
-- Database-level authentication
-- BCrypt password encoding
-- User registration API
-- Secured APIs by default
-- Public endpoint support
-- Easy local database setup
-- Automatic table creation support using JPA/Hibernate
+This project has moved from session/basic authentication to **JWT-based authentication**.
+
+Now all secured APIs require a valid JWT token.
 
 ---
 
-## Tech Stack
+## 🔐 Authentication Flow
 
-- Java
-- Spring Boot
-- Spring Security
-- Spring Data JPA
-- BCrypt Password Encoder
-- H2 / PostgreSQL / MySQL (configurable)
+### 1. User Registration (Public)
 
----
+Register a new user in the system.
 
-## Authentication Rules
+**Endpoint:**
 
-### Public APIs
-
-The following endpoint is accessible without authentication:
-
-```text
-/generate/app/**
 ```
-
-Example:
-
-```text
-/generate/app/register/user
-```
-
-### Secured APIs
-
-All other endpoints require authentication.
-
----
-
-## User Registration
-
-Register a user using:
-
-```http
 POST /generate/app/register/user
 ```
 
-### Sample Request
+**Request:**
+
+```json
+{
+  "username": "admin",
+  "password": "admin123",
+  "roles": "USER"
+}
+```
+
+Notes:
+
+- Password is stored using BCrypt encryption
+- User details are stored in database
+- Roles are stored for future role-based authorization
+
+### 2. Login (Token Generation)
+
+Authenticate user and generate JWT token.
+
+**Endpoint:**
+
+```
+POST /generate/app/login
+```
+
+**Request:**
 
 ```json
 {
@@ -71,68 +61,124 @@ POST /generate/app/register/user
 }
 ```
 
-### Notes
+**Response:**
 
-- Passwords are stored using BCrypt encoding
-- Authentication happens against database records
+```json
+{
+  "username": "admin",
+  "jwtToken": "eyJhbGciOiJIUzI1NiJ9...",
+  "loginComment": "Login successful"
+}
+```
 
 ---
 
-## Database Setup
+## 🔑 Using the JWT Token
 
-The project currently supports a local database setup.
+All secured APIs require the token in request header:
 
-You can modify database configuration in:
+```
+INTENDED_TOKEN: <generated-jwt-token>
+```
 
-```properties
+**Example:**
+
+```
+GET /getData
+INTENDED_TOKEN: eyJhbGciOiJIUzI1NiJ9...
+```
+
+---
+
+## 🔒 Security Rules
+
+### Public Endpoints
+
+No authentication required:
+
+```
+/generate/app/**
+```
+
+Includes:
+
+- User registration
+- Login
+
+### Secured Endpoints
+
+All other endpoints require valid JWT token:
+
+```
+/**
+```
+
+---
+
+## ⚙️ JWT Validation Flow
+
+1. User registers (stored in DB)
+2. User logs in with username & password
+3. System validates credentials against database
+4. If valid → JWT token is generated
+5. Client sends token in `INTENDED_TOKEN` header
+6. Spring Security filter validates token
+7. Request is allowed if token is valid
+
+---
+
+## 🗄 Database Setup
+
+Supports H2 / MySQL / PostgreSQL.
+
+Configure in:
+
+```
 application.properties
 ```
 
-Example:
+**Example:**
 
 ```properties
 spring.datasource.url=jdbc:h2:mem:testdb
 spring.datasource.username=sa
 spring.datasource.password=
-```
-
----
-
-## Auto Table Creation
-
-You can enable automatic table creation using Hibernate/JPA.
-
-Example:
-
-```properties
 spring.jpa.hibernate.ddl-auto=update
 ```
 
-This will automatically create the required tables during application startup.
+---
 
-Suggested user table:
+## 👤 User Table
 
-```text
+Suggested table:
+
+```
 user_cred_info
 ```
 
+Fields:
+
+- username
+- password (BCrypt encoded)
+- roles
+
 ---
 
-## Running the Project
+## ▶️ Running the Project
 
-### Clone Repository
+**Clone Repository**
 
 ```bash
 git clone https://github.com/sayanth-ranjith/spring-security.git
 ```
 
-### Build Project
+**Build Project**
 
 ```bash
 mvn clean install
 ```
 
-### Run Application
+**Run Application**
 
 ```bash
 mvn spring-boot:run
@@ -140,39 +186,24 @@ mvn spring-boot:run
 
 ---
 
-## Default Flow
+## 🧠 Learning Goals
 
-1. Start application
-2. Register user using public API
-3. Login using registered credentials
-4. Access secured APIs
+This project helps you understand:
+
+- Spring Security filter chain
+- JWT authentication flow
+- Stateless authentication
+- BCrypt password encoding
+- Database-backed authentication
+- Secure API design
 
 ---
 
-## Future Improvements
+## 🔮 Future Improvements
 
-- JWT Authentication
-- Role-based authorization
+- Role-based authorization (ADMIN / USER)
 - Refresh tokens
 - OAuth2 / OIDC integration
-- Docker support
-- PostgreSQL production setup
-- Swagger/OpenAPI documentation
-
----
-
-## Learning Purpose
-
-This project is mainly created to understand:
-
-- Spring Security fundamentals
-- Authentication flow
-- Password encoding
-- Security filter chain
-- Database-backed user authentication
-
----
-
-## Author
-
-GitHub: https://github.com/sayanth-ranjith/spring-security
+- API documentation (Swagger/OpenAPI)
+- Docker deployment
+- Production-ready DB setup
