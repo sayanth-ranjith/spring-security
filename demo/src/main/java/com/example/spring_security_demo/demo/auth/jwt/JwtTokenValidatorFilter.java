@@ -80,12 +80,12 @@ public class JwtTokenValidatorFilter extends OncePerRequestFilter {
             jwtService.verifyToken(token, jwtService.extractUserName(token));
             filterChain.doFilter(request, response);
         }
-        catch (IllegalArgumentException e) {
+        catch (Exception e) {
             handleException(response, e);
         }
     }
 
-    private void handleException(HttpServletResponse response, IllegalArgumentException e) throws IOException {
+    private void handleException(HttpServletResponse response, Exception e) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
 
